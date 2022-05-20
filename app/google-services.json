@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "482652077144",
+    "project_id": "test-practice-firebase",
+    "storage_bucket": "test-practice-firebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482652077144:android:5d0a5f137dd38607e11e2d",
+        "android_client_info": {
+          "package_name": "com.example.emojisstatus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482652077144-h95kn66agoutk3q6afupbdu022r69uls.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.emojisstatus",
+            "certificate_hash": "e7494f7ef276a1bd04df66460595adecb3583ee7"
+          }
+        },
+        {
+          "client_id": "482652077144-qd47efnl459rmmtug80mdltkda98uknt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4fppd1sn0ADjyL1XimfQ5b_a5apf7Tz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482652077144-qd47efnl459rmmtug80mdltkda98uknt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
