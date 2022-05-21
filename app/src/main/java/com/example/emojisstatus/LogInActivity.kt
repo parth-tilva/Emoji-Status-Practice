@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.emojisstatus.databinding.ActivityLogInBinding
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -27,13 +29,14 @@ import com.google.firebase.ktx.Firebase
 const val TAG = "login"
 class LogInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
-    private val RC_SIGN_IN: Int = 123
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var binding: ActivityLogInBinding
-    private lateinit var mFirebase:FirebaseFirestore
+    private lateinit var someActivityResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = Firebase.auth
 
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -46,30 +49,27 @@ class LogInActivity : AppCompatActivity() {
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
-
         binding.GSBtn.setOnClickListener{
             signIn()
         }
 
-        auth = Firebase.auth
 
-//
-//        public void openSomeActivityForResult(View view) {
-//            ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-//                    new ActivityResultContracts.StartActivityForResult(),
-//            new ActivityResultCallback<ActivityResult>() {
-//                @Override
-//                public void onActivityResult(ActivityResult result) {
-//                    if (result.getResultCode() == Activity.RESULT_OK) {
-//                        // There are no request codes
-//                        Intent data = result.getData();
-//                        Uri uri = data.getData();
-//                        ImageView imageView = R.id.img;
-//                        imageView.setImageURI(uri);
-//                    }
-//                }
-//            });
-
+        someActivityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+                try {
+                    // Google Sign In was successful, authenticate with Firebase
+                    val account = task.getResult(ApiException::class.java)!!
+                    Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                    firebaseAuthWithGoogle(account.idToken!!)
+                } catch (e: ApiException) {
+                    // Google Sign In failed, update UI appropriately
+                    Log.w(TAG, "Google sign in failed", e)
+                }
+            }
+        }
 
 
 
@@ -77,12 +77,12 @@ class LogInActivity : AppCompatActivity() {
 
     private fun signIn() {
         val signIntent = googleSignInClient.signInIntent
-        startActivityForResult(signIntent,RC_SIGN_IN)
+        someActivityResultLauncher.launch(signIntent)
     }
 
     override fun onStart() {
         super.onStart()
-        var currentUser = auth.getCurrentUser()
+        var currentUser = auth.currentUser
         updateUI(currentUser);
     }
 
@@ -92,23 +92,23 @@ class LogInActivity : AppCompatActivity() {
 
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)!!
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e)
-            }
-        }
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+//        if (requestCode == RC_SIGN_IN) {
+//            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+//            try {
+//                // Google Sign In was successful, authenticate with Firebase
+//                val account = task.getResult(ApiException::class.java)!!
+//                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+//                firebaseAuthWithGoogle(account.idToken!!)
+//            } catch (e: ApiException) {
+//                // Google Sign In failed, update UI appropriately
+//                Log.w(TAG, "Google sign in failed", e)
+//            }
+//        }
+//    }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         binding.GSBtn.visibility = View.GONE
