@@ -2,6 +2,8 @@ package com.example.emojisstatus
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputFilter
+import android.text.Spanned
 import android.util.Log
 import android.view.*
 import android.widget.EditText
@@ -91,7 +93,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun showAlertDialog() {
         val editText = EditText(this)
-
+        val emojiFilter = EmojiFilter()
+        val lengthFilter = InputFilter.LengthFilter(6)
+        editText.filters  = arrayOf(emojiFilter,lengthFilter)
         val dialog = AlertDialog.Builder(this)
             .setTitle("Update you emojis")
             .setView(editText)
@@ -115,8 +119,17 @@ class MainActivity : AppCompatActivity() {
             }
             .show()
 
-//        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-//
-//        }  //??
+    }
+
+    class EmojiFilter: InputFilter {
+        override fun filter(source: CharSequence?,start: Int,end: Int,dest: Spanned?,dstart: Int, dend: Int
+        ): CharSequence {
+            if(source==null || source.isBlank()){
+                return ""
+            }
+            Log.d(TAG, "add length:${source.length}")
+            return source
+        }
+
     }
 }

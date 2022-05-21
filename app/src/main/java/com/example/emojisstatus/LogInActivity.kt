@@ -102,9 +102,7 @@ class LogInActivity : AppCompatActivity() {
                         "photoUrl" to user.photoUrl,
                         //"emojis" to "\uD83D\uDE02"
                     )
-                        db.collection("users").document(user.uid).set(userHas, SetOptions.merge()) //,SetOptions.merge()
-                            .addOnSuccessListener { Log.d(TAG, "login data successfully written!") }
-                            .addOnFailureListener { e -> Log.w(TAG, "Error login writing document", e) }
+                        db.collection("users").document(user.uid).set(userHas, SetOptions.merge())
                     updateUI(user)
                 } else {
                     // If sign in fails, display a message to the user.
