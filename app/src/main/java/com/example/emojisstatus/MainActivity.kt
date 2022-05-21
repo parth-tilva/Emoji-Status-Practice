@@ -4,8 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.emojisstatus.databinding.ActivityMainBinding
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
@@ -39,19 +43,6 @@ class MainActivity : AppCompatActivity() {
 
         val query = db.collection("users")
 
-//        val docRef = query.document("DmU58uvAUCR4SxG43h11BSDmyOG3")
-//        docRef.get()
-//            .addOnSuccessListener { document ->
-//                if (document != null) {
-//                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-//                } else {
-//                    Log.d(TAG, "No such document")
-//                }
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.d(TAG, "get failed with ", exception)
-//            }
-
         val options: FirestoreRecyclerOptions<User> = FirestoreRecyclerOptions.Builder<User>()
             .setQuery(query, User::class.java)
             .setLifecycleOwner(this)
@@ -72,6 +63,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
         binding.rvEmojiList.adapter = adapter
+        binding.rvEmojiList.layoutManager  = LinearLayoutManager(this)
+        binding.rvEmojiList.itemAnimator = null
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -89,8 +83,40 @@ class MainActivity : AppCompatActivity() {
             finishAffinity()
         }else if(item.itemId == R.id.action_edit){
             Log.d(TAG ,"edit called")
+            showAlertDialog()
 
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showAlertDialog() {
+        val editText = EditText(this)
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Update you emojis")
+            .setView(editText)
+            .setNegativeButton("Cancle",null)
+            .setPositiveButton("Ok") { _, _ ->
+                val stringEmoji = editText.text.toString()
+                if(stringEmoji.isBlank())
+                Toast.makeText(this@MainActivity,"blank input",Toast.LENGTH_LONG).show()
+
+                db.collection("users").document(auth.uid!!).update("emojis",stringEmoji)
+                            .addOnSuccessListener { document ->
+                                if (document != null) {
+                                    Log.d(TAG, "DocumentSnapshot data: ${document.toString()}")
+                                } else {
+                                    Log.d(TAG, "No such document")
+                                }
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.d(TAG, "get failed with ", exception)
+                            }
+            }
+            .show()
+
+//        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+//
+//        }  //??
     }
 }

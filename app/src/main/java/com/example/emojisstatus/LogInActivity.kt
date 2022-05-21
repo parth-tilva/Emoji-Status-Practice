@@ -100,9 +100,9 @@ class LogInActivity : AppCompatActivity() {
                     val userHas = hashMapOf(
                         "displayName" to user.displayName,
                         "photoUrl" to user.photoUrl,
-                        "emojis" to "\uD83D\uDE02"
+                        //"emojis" to "\uD83D\uDE02"
                     )
-                        db.collection("users").document(user.uid).set(userHas)
+                        db.collection("users").document(user.uid).set(userHas, SetOptions.merge()) //,SetOptions.merge()
                             .addOnSuccessListener { Log.d(TAG, "login data successfully written!") }
                             .addOnFailureListener { e -> Log.w(TAG, "Error login writing document", e) }
                     updateUI(user)
