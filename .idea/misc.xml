@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/parth/AppData/Local/Android/Sdk/platforms/android-31/data/res/layout/simple_list_item_2.xml" value="0.24375" />
         <entry key="..\:/Users/parth/OneDrive/Desktop/project_history/Emojisstatus/app/src/main/res/layout/activity_log_in.xml" value="0.24375" />
+        <entry key="..\:/Users/parth/OneDrive/Desktop/project_history/Emojisstatus/app/src/main/res/layout/activity_main.xml" value="0.24375" />
+        <entry key="..\:/Users/parth/OneDrive/Desktop/project_history/Emojisstatus/app/src/main/res/layout/item_emoji.xml" value="0.24375" />
+        <entry key="..\:/Users/parth/OneDrive/Desktop/project_history/Emojisstatus/app/src/main/res/menu/menu.xml" value="0.1" />
       </map>
     </option>
   </component>

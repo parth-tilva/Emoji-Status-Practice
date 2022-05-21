@@ -24,6 +24,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.auth.User
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 const val TAG = "login"
@@ -31,6 +32,7 @@ class LogInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var binding: ActivityLogInBinding
+    private lateinit var  db: FirebaseFirestore
     private lateinit var someActivityResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,8 +73,6 @@ class LogInActivity : AppCompatActivity() {
             }
         }
 
-
-
     }
 
     private fun signIn() {
@@ -86,30 +86,6 @@ class LogInActivity : AppCompatActivity() {
         updateUI(currentUser);
     }
 
-
-
-
-
-
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-//        if (requestCode == RC_SIGN_IN) {
-//            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-//            try {
-//                // Google Sign In was successful, authenticate with Firebase
-//                val account = task.getResult(ApiException::class.java)!!
-//                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-//                firebaseAuthWithGoogle(account.idToken!!)
-//            } catch (e: ApiException) {
-//                // Google Sign In failed, update UI appropriately
-//                Log.w(TAG, "Google sign in failed", e)
-//            }
-//        }
-//    }
-
     private fun firebaseAuthWithGoogle(idToken: String) {
         binding.GSBtn.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
@@ -119,7 +95,16 @@ class LogInActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
-                    val user = auth.currentUser
+                    val user = auth.currentUser!!
+                     db = Firebase.firestore
+                    val userHas = hashMapOf(
+                        "displayName" to user.displayName,
+                        "photoUrl" to user.photoUrl,
+                        "emojis" to "\uD83D\uDE02"
+                    )
+                        db.collection("users").document(user.uid).set(userHas)
+                            .addOnSuccessListener { Log.d(TAG, "login data successfully written!") }
+                            .addOnFailureListener { e -> Log.w(TAG, "Error login writing document", e) }
                     updateUI(user)
                 } else {
                     // If sign in fails, display a message to the user.
