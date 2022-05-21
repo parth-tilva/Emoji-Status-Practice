@@ -126,35 +126,3 @@ class LogInActivity : AppCompatActivity() {
     }
 
 }
-
-//currentUser.displayName
-//            currentUser.email
-//            currentUser.photoUrl
-//            currentUser.uid
-//            order arry
-//
-
-//    private fun firebaseAuthWithGoogle(idToken: String) {
-//        val credential = GoogleAuthProvider.getCredential(idToken, null)
-//        auth.signInWithCredential(credential)
-//            .addOnCompleteListener(this) { task ->
-//                if (task.isSuccessful) {
-//                    // Sign in success, update UI with the signed-in user's information
-//                    Log.d(TAG, "signInWithCredential:success")
-//                    val user = auth.currentUser
-//                    updateUI(user)
-//                } else {
-//                    // If sign in fails, display a message to the user.
-//                    Log.w(TAG, "signInWithCredential:failure", task.exception)
-//                    updateUI(null)
-//                }
-//            }
-//    }
-
-
-
-
-//    fun updateUI(currentUser: FirebaseUser?){
-//
-//    }
-//}

@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         auth = Firebase.auth
         db = Firebase.firestore
-
         val query = db.collection("users")
 
         val options: FirestoreRecyclerOptions<User> = FirestoreRecyclerOptions.Builder<User>()
@@ -59,7 +58,6 @@ class MainActivity : AppCompatActivity() {
             override fun onBindViewHolder(holder: ViewHolder, position: Int, model: User) {
                 val tvName: TextView = holder.itemView.findViewById(android.R.id.text1)
                 val tvEmoji: TextView = holder.itemView.findViewById(android.R.id.text2)
-                Log.d(TAG,"model ${model.displayName}")
                 tvName.text = model.displayName
                 tvEmoji.text = model.emojis
             }
@@ -80,13 +78,10 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG ,"user Log Out")
             auth.signOut()
             val logOut = Intent(this,LogInActivity::class.java)
-            //logOut.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent. FLAG_ACTIVITY_CLEAR_TASK
             startActivity(logOut)
             finishAffinity()
         }else if(item.itemId == R.id.action_edit){
-            Log.d(TAG ,"edit called")
             showAlertDialog()
-
         }
         return super.onOptionsItemSelected(item)
     }
@@ -104,21 +99,9 @@ class MainActivity : AppCompatActivity() {
                 val stringEmoji = editText.text.toString()
                 if(stringEmoji.isBlank())
                 Toast.makeText(this@MainActivity,"blank input",Toast.LENGTH_LONG).show()
-
                 db.collection("users").document(auth.uid!!).update("emojis",stringEmoji)
-                            .addOnSuccessListener { document ->
-                                if (document != null) {
-                                    Log.d(TAG, "DocumentSnapshot data: ${document.toString()}")
-                                } else {
-                                    Log.d(TAG, "No such document")
-                                }
-                            }
-                            .addOnFailureListener { exception ->
-                                Log.d(TAG, "get failed with ", exception)
-                            }
             }
             .show()
-
     }
 
     class EmojiFilter: InputFilter {
